@@ -15,10 +15,10 @@ namespace BooksCollection
             FilePath = filePath;
         }
 
-        public IList<Book> GetCollection()
+        public IList<Book> Load()
         {
             FileMode mode = !File.Exists(FilePath) ? FileMode.Create : FileMode.Open;
-            List<Book> books = new List<Book>();
+            IList<Book> books = new List<Book>();
             using (BinaryReader binaryReader = new BinaryReader(new FileStream(FilePath, mode)))
             {
                 while (binaryReader.PeekChar() > -1)
@@ -35,16 +35,11 @@ namespace BooksCollection
             return books;
         }
 
-        public void AddItem(Book book)
-        {
-                AddItems(new List<Book> {book}, FileMode.Append);
-        }
-
-        public void  AddItems(List<Book> booksCollection , FileMode mode)
+        public void  Save(IList<Book> booksCollection)
         {
             if (booksCollection == null)
                 throw new ArgumentNullException();
-            using (BinaryWriter binaryWriter = new BinaryWriter(new FileStream(FilePath, mode, FileAccess.Write)))
+            using (BinaryWriter binaryWriter = new BinaryWriter(new FileStream(FilePath, FileMode.Append, FileAccess.Write)))
             {
                 foreach (var book in booksCollection)
                 {
@@ -56,17 +51,6 @@ namespace BooksCollection
                     binaryWriter.Write(book.Year);
                 }
             }
-        }
-
-        public bool RemoveItem(Book book)
-        {
-            if (book == null)
-                throw new ArgumentNullException();
-            bool find = false;
-            List<Book> books = GetCollection().ToList();
-            find = books.Remove(book);
-            AddItems(books , FileMode.Create);
-            return find;
         }
     }
 }

@@ -25,10 +25,8 @@ namespace BooksCollection
     }
     public class Collection :IEnumerable<Book>
     {
-        private FileStream fs;
-
-        public Repository Repository { get; }
-        public IList<Book> books => Repository.GetCollection(); 
+        public IRepository<Book> Repository { get; }
+        private IList<Book> _books = new List<Book>(); 
 
         public Collection(string filePath)
         {
@@ -38,9 +36,9 @@ namespace BooksCollection
         {
             if (book == null)
                 throw new ArgumentNullException();
-            if (books.Contains(book))
+            if (_books.Contains(book))
                 throw new AddBookException("This book already exists");
-            Repository.AddItem(book);
+            _books.Add(book);
         }
 
         public void RemoveBook(string name)
@@ -48,33 +46,45 @@ namespace BooksCollection
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException();
             bool find = false;
-            foreach (var item in books)
+            foreach (var item in _books)
             {
                 if (item.BookName == name)
                 {
-                    Repository.RemoveItem(item);
+                    _books.Remove(item);
                     find = true;
+                    break;
                 }                
-            }
+            }            
             if (!find)
-                throw new RemoveBookException("there is no this book in collection");
-                 
+                throw new RemoveBookException("there is no this book in collection");  
         }
 
         public void RemoveBook(Book book)
         {
             if (book == null)
                 throw new ArgumentNullException();
-            bool find = Repository.RemoveItem(book);
+            bool find = _books.Remove(book);
             if (!find)
                 throw new RemoveBookException("there is no this book in collection");
         }
+
+
+        public void LoadCollectionFromRemoteFile()
+        {
+            _books=Repository.Load();
+        }
+
+        public void SaveCollectionToRemoteFile()
+        {
+            Repository.Save(_books);
+        }
+
 
         public List<Book> FindByTag(string name)
         {
             List<Book> booksFound = new List<Book>();
             bool found = false;
-            foreach (var item in books)
+            foreach (var item in _books)
             {
                 if (item.BookName == name)
                 {
@@ -91,7 +101,7 @@ namespace BooksCollection
         {
             List<Book> booksFound = new List<Book>();
             bool found = false;
-            foreach (var item in books)
+            foreach (var item in _books)
             {
                 if (item.Authors.Contains(authorName) && (item.Authors.Contains(authorSurname)))
                 {
@@ -108,7 +118,7 @@ namespace BooksCollection
         {
             List<Book> booksFound = new List<Book>();
             bool found = false;
-            foreach (var item in books)
+            foreach (var item in _books)
             {
                 if (item.Year == year)
                 {
@@ -122,28 +132,23 @@ namespace BooksCollection
         }
 
         public void SortBooksByTag(IComparer<Book>  key)
-        {
-            
-            List<Book> srt = books.ToList();
-            srt.Sort(key);
-            Repository.AddItems(srt,FileMode.Create);
-        
-        
+        {            
+            _books.ToList().Sort(key);             
         }
 
         public IEnumerator<Book> GetEnumerator()
         {
-            return books.GetEnumerator();
+            return _books.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return books.GetEnumerator();
+            return _books.GetEnumerator();
         }
 
         public Book this[int index]
         {
-            get { return books[index]; }
+            get { return _books[index]; }
         }
 
         

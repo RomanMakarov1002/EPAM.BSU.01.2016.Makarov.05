@@ -7,12 +7,10 @@ using System.IO;
 
 namespace BooksCollection
 {
-    interface IRepository<T>
+    public interface IRepository<T>
     {
-        IList<T> GetCollection();
-        void AddItem(T item);
-        void AddItems(List<T> items, FileMode mode);
-        bool RemoveItem(T item);
+        IList<T> Load();
+        void Save(IList<T> items);
     }
 
     

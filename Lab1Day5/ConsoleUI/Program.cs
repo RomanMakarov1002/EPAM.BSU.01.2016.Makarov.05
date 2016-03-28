@@ -24,6 +24,7 @@ namespace ConsoleUI
                 File.Delete("lessDetailedFile.txt");
             Logger logger = LogManager.GetCurrentClassLogger();
             Collection col = new Collection("books");
+          
             col.AddBook(new Book("SomeBook", 110, "Remark", "England", "history", 1960));
             col.AddBook(new Book("Azbyka", 100, "fsfs", "fsfbc", "fsfs", 1895));
             col.AddBook(new Book("Bykvar", 50, "SomeAuthor", "Minsk", "ForChildren", 2001));
@@ -32,21 +33,21 @@ namespace ConsoleUI
             col.RemoveBook("SomeBook");
             SortByName sort1 = new SortByName();
            
-            foreach (var item in col.books)
+            foreach (var item in col)
             {
-                Console.WriteLine(item);
+                Console.WriteLine(item.BookName);
             }
 
             Console.WriteLine("------------------------- List of books ");
             col.SortBooksByTag(sort1);
-            foreach (var item in col.books)
+            foreach (var item in col)
             {
                 Console.WriteLine(item);
             }
 
             Console.WriteLine("------------------------- List of books after sort");
             col.SortBooksByTag(new SortByPages());
-            foreach (var item in col.books)
+            foreach (var item in col)
             {
                 Console.WriteLine(item);
             }
@@ -87,7 +88,9 @@ namespace ConsoleUI
                 Console.WriteLine(ex.Message);
                 logger.Error(ex);
             }
-            logger.Info(col.books[0].ToString);
+            logger.Info(col[0].ToString);
+            Console.ReadKey();
+            col.SaveCollectionToRemoteFile();
             Console.ReadKey();
         }
     }
