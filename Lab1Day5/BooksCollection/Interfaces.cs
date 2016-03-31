@@ -9,8 +9,8 @@ namespace BooksCollection
 {
     public interface IRepository<T>
     {
-        IList<T> Load();
-        void Save(IList<T> items);
+        IEnumerable<T> Load();
+        void Save(IEnumerable<T> items);
     }
 
     

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -23,15 +24,24 @@ namespace BooksCollection
             
         }
     }
-    public class Collection :IEnumerable<Book>
+    public class Service
     {
-        public IRepository<Book> Repository { get; }
-        private IList<Book> _books = new List<Book>(); 
-
-        public Collection(string filePath)
+        //public IRepository<Book> Repository { get; }
+        public List<Book> _books = new List<Book>(); 
+        /*
+        public Service(string filePath)
         {
             Repository = new Repository(filePath);
         }
+        */
+        public Service() { }
+
+        public Service(List<Book> books)
+        {
+            _books = books;
+        }
+
+
         public void AddBook(Book book)
         {
             if (book == null)
@@ -69,88 +79,46 @@ namespace BooksCollection
         }
 
 
-        public void LoadCollectionFromRemoteFile()
+        public void LoadCollectionFromRemoteFile(IRepository<Book> repository )
         {
-            _books=Repository.Load();
+            _books=repository.Load().ToList();
         }
 
-        public void SaveCollectionToRemoteFile()
+        public void SaveCollectionToRemoteFile(IRepository<Book> repository )
         {
-            Repository.Save(_books);
+            repository.Save(_books);
         }
 
-
-        public List<Book> FindByTag(string name)
+        
+        public List<Book> FindByTag(string name )
         {
-            List<Book> booksFound = new List<Book>();
-            bool found = false;
-            foreach (var item in _books)
-            {
-                if (item.BookName == name)
-                {
-                    booksFound.Add(item);
-                    found = true;
-                }
-            }
-            if (!found)
-                throw new KeyNotFoundException("there is no this book in collection");
-            return booksFound;
+            return _books.FindAll(books=>books.BookName==name);
         }
 
         public List<Book> FindByTag(string authorName, string authorSurname)
         {
-            List<Book> booksFound = new List<Book>();
-            bool found = false;
-            foreach (var item in _books)
-            {
-                if (item.Authors.Contains(authorName) && (item.Authors.Contains(authorSurname)))
-                {
-                    booksFound.Add(item);
-                    found = true;
-                }
-            }
-            if (!found)
-                throw new KeyNotFoundException("there is no this book in collection");
-            return booksFound;
+            return _books.FindAll(books => books.Authors == authorName + authorSurname);
         }
 
         public List<Book> FindByTag(int year)
         {
-            List<Book> booksFound = new List<Book>();
-            bool found = false;
-            foreach (var item in _books)
-            {
-                if (item.Year == year)
-                {
-                    booksFound.Add(item);
-                    found = true;
-                }
-            }
-            if (!found)
-                throw new KeyNotFoundException("there is no this book in collection");
-            return booksFound;
+            return _books.FindAll(books => books.Year == year);
         }
+
 
         public void SortBooksByTag(IComparer<Book>  key)
         {            
             _books.ToList().Sort(key);             
         }
 
-        public IEnumerator<Book> GetEnumerator()
-        {
-            return _books.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _books.GetEnumerator();
-        }
+        
 
         public Book this[int index]
         {
             get { return _books[index]; }
         }
 
+       
         
     }
 }

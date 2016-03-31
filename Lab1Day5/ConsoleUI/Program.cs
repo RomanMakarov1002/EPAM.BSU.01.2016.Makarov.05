@@ -23,31 +23,36 @@ namespace ConsoleUI
             if (File.Exists("lessDetailedFile.txt"))
                 File.Delete("lessDetailedFile.txt");
             Logger logger = LogManager.GetCurrentClassLogger();
-            Collection col = new Collection("books");
+            Service col = new Service();
           
             col.AddBook(new Book("SomeBook", 110, "Remark", "England", "history", 1960));
             col.AddBook(new Book("Azbyka", 100, "fsfs", "fsfbc", "fsfs", 1895));
             col.AddBook(new Book("Bykvar", 50, "SomeAuthor", "Minsk", "ForChildren", 2001));
-            col.AddBook(new Book("War and Peace", 2500, "Tolstoy", "Moscow", "novel", 1980));
+            col.AddBook(new Book("War and Peace", 2500, "Tolstoy", "Moscow", "novel", 1970));
             col.AddBook(new Book("Crime and Justice", 1000, "Dostoevskiy", "Moscow", "novel", 1970));
             col.RemoveBook("SomeBook");
+
+            Console.WriteLine(col.FindByTag(1970).Count);
+            Console.ReadKey();
+            
+
             SortByName sort1 = new SortByName();
            
-            foreach (var item in col)
+            foreach (var item in col._books)
             {
                 Console.WriteLine(item.BookName);
             }
 
             Console.WriteLine("------------------------- List of books ");
             col.SortBooksByTag(sort1);
-            foreach (var item in col)
+            foreach (var item in col._books)
             {
                 Console.WriteLine(item);
             }
 
             Console.WriteLine("------------------------- List of books after sort");
             col.SortBooksByTag(new SortByPages());
-            foreach (var item in col)
+            foreach (var item in col._books)
             {
                 Console.WriteLine(item);
             }
@@ -90,7 +95,15 @@ namespace ConsoleUI
             }
             logger.Info(col[0].ToString);
             Console.ReadKey();
-            col.SaveCollectionToRemoteFile();
+            Repository rep = new Repository("books");
+            col.SaveCollectionToRemoteFile(rep);
+
+            Service col1 = new Service();
+            col1.LoadCollectionFromRemoteFile(rep);
+            foreach (var item in col._books)
+            {
+                Console.WriteLine(item.BookName);
+            }
             Console.ReadKey();
         }
     }

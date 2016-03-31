@@ -9,13 +9,17 @@ namespace BooksCollection
 {
     public class Repository : IRepository<Book> 
     {
+        
         private string FilePath { get; }
         public Repository(string filePath)
         {
             FilePath = filePath;
+            FileMode mode = !File.Exists(FilePath) ? FileMode.Create : FileMode.Open;
         }
 
-        public IList<Book> Load()
+        
+
+        public IEnumerable<Book> Load()
         {
             FileMode mode = !File.Exists(FilePath) ? FileMode.Create : FileMode.Open;
             IList<Book> books = new List<Book>();
@@ -35,7 +39,7 @@ namespace BooksCollection
             return books;
         }
 
-        public void  Save(IList<Book> booksCollection)
+        public void  Save(IEnumerable<Book> booksCollection)
         {
             if (booksCollection == null)
                 throw new ArgumentNullException();
