@@ -26,21 +26,13 @@ namespace BooksCollection
     }
     public class Service
     {
-        //public IRepository<Book> Repository { get; }
         public List<Book> _books = new List<Book>(); 
-        /*
-        public Service(string filePath)
-        {
-            Repository = new Repository(filePath);
-        }
-        */
         public Service() { }
 
         public Service(List<Book> books)
         {
             _books = books;
         }
-
 
         public void AddBook(Book book)
         {
@@ -92,7 +84,7 @@ namespace BooksCollection
         
         public List<Book> FindByTag(string name )
         {
-            return _books.FindAll(books=>books.BookName==name);
+            return _books.FindAll(books => books.BookName == name);
         }
 
         public List<Book> FindByTag(string authorName, string authorSurname)
