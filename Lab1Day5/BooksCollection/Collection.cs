@@ -26,21 +26,21 @@ namespace BooksCollection
     }
     public class Service
     {
-        public List<Book> _books = new List<Book>(); 
+        public List<Book> Books = new List<Book>(); 
         public Service() { }
 
         public Service(List<Book> books)
         {
-            _books = books;
+            Books = books;
         }
 
         public void AddBook(Book book)
         {
             if (book == null)
                 throw new ArgumentNullException();
-            if (_books.Contains(book))
+            if (Books.Contains(book))
                 throw new AddBookException("This book already exists");
-            _books.Add(book);
+            Books.Add(book);
         }
 
         public void RemoveBook(string name)
@@ -48,11 +48,11 @@ namespace BooksCollection
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException();
             bool find = false;
-            foreach (var item in _books)
+            foreach (var item in Books)
             {
                 if (item.BookName == name)
                 {
-                    _books.Remove(item);
+                    Books.Remove(item);
                     find = true;
                     break;
                 }                
@@ -65,7 +65,7 @@ namespace BooksCollection
         {
             if (book == null)
                 throw new ArgumentNullException();
-            bool find = _books.Remove(book);
+            bool find = Books.Remove(book);
             if (!find)
                 throw new RemoveBookException("there is no this book in collection");
         }
@@ -73,41 +73,41 @@ namespace BooksCollection
 
         public void LoadCollectionFromRemoteFile(IRepository<Book> repository )
         {
-            _books=repository.Load().ToList();
+            Books=repository.Load().ToList();
         }
 
         public void SaveCollectionToRemoteFile(IRepository<Book> repository )
         {
-            repository.Save(_books);
+            repository.Save(Books);
         }
 
         
         public List<Book> FindByTag(string name )
         {
-            return _books.FindAll(books => books.BookName == name);
+            return Books.FindAll(books => books.BookName == name);
         }
 
         public List<Book> FindByTag(string authorName, string authorSurname)
         {
-            return _books.FindAll(books => books.Authors == authorName + authorSurname);
+            return Books.FindAll(books => books.Authors == authorName + authorSurname);
         }
 
         public List<Book> FindByTag(int year)
         {
-            return _books.FindAll(books => books.Year == year);
+            return Books.FindAll(books => books.Year == year);
         }
 
 
         public void SortBooksByTag(IComparer<Book>  key)
         {            
-            _books.ToList().Sort(key);             
+            Books.ToList().Sort(key);             
         }
 
         
 
         public Book this[int index]
         {
-            get { return _books[index]; }
+            get { return Books[index]; }
         }
 
        

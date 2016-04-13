@@ -34,25 +34,52 @@ namespace ConsoleUI
 
             Console.WriteLine(col.FindByTag(1970).Count);
             Console.ReadKey();
-            
 
+
+            XMLRepository xmlRepository = new XMLRepository("XmlRep");
+            col.SaveCollectionToRemoteFile(xmlRepository);
+            Console.WriteLine("Collection saved to Xml");
+            Console.ReadKey();
+            col.LoadCollectionFromRemoteFile(xmlRepository);
+            foreach (var item in col.Books)
+            {
+                Console.WriteLine(item);
+            }
+            Console.WriteLine();
+            Console.WriteLine("Library load from Xml file");
+            Console.ReadKey();
+
+            BinarySerializer bs = new BinarySerializer("Bs");
+            col.SaveCollectionToRemoteFile(bs);
+         
+            Console.WriteLine("done serialization");
+            Console.ReadKey();
+ 
+            col.LoadCollectionFromRemoteFile(bs);
+            foreach (var item in col.Books)
+            {
+                Console.WriteLine(item);
+            }
+
+            Console.WriteLine("deserialized");
+            Console.ReadKey();
             SortByName sort1 = new SortByName();
            
-            foreach (var item in col._books)
+            foreach (var item in col.Books)
             {
                 Console.WriteLine(item.BookName);
             }
 
             Console.WriteLine("------------------------- List of books ");
             col.SortBooksByTag(sort1);
-            foreach (var item in col._books)
+            foreach (var item in col.Books)
             {
                 Console.WriteLine(item);
             }
 
             Console.WriteLine("------------------------- List of books after sort");
             col.SortBooksByTag(new SortByPages());
-            foreach (var item in col._books)
+            foreach (var item in col.Books)
             {
                 Console.WriteLine(item);
             }
@@ -100,7 +127,7 @@ namespace ConsoleUI
 
             Service col1 = new Service();
             col1.LoadCollectionFromRemoteFile(rep);
-            foreach (var item in col._books)
+            foreach (var item in col.Books)
             {
                 Console.WriteLine(item.BookName);
             }

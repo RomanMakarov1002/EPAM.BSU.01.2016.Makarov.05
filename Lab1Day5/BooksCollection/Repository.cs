@@ -13,8 +13,9 @@ namespace BooksCollection
         private string FilePath { get; }
         public Repository(string filePath)
         {
+            if (String.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException();
             FilePath = filePath;
-            FileMode mode = !File.Exists(FilePath) ? FileMode.Create : FileMode.Open;
         }
 
         
@@ -22,7 +23,7 @@ namespace BooksCollection
         public IEnumerable<Book> Load()
         {
             FileMode mode = !File.Exists(FilePath) ? FileMode.Create : FileMode.Open;
-            IList<Book> books = new List<Book>();
+            List<Book> books = new List<Book>();            
             using (BinaryReader binaryReader = new BinaryReader(new FileStream(FilePath, mode)))
             {
                 while (binaryReader.PeekChar() > -1)
